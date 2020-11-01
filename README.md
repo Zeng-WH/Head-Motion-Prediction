@@ -1,2 +1,2 @@
 # Head-Motion-Prediction
-We want to promote a deep learning method to predict head motion.
+We want to propose a deep learning method to predict head motion.
