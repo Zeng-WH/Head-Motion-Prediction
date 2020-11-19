@@ -15,7 +15,7 @@ def read_all_file(path):
         #遍历文件夹
         if not os.path.isdir(file):
             f = open(path+"/"+file)
-            print(file)
+            #print(file)
             iter_f = f.readlines()
             for line in iter_f:
                 lines.append(line.strip('\n').split(','))
@@ -77,7 +77,7 @@ class Prepross_Data():
     def norm_diff(self):
         x_origin, y_origin = self.data_split()
         x_train_set = np.zeros((self.size, 3, self.WinSize - 1))
-        y_train_set = np.zeros((self.size, 3, int(self.PreSize / 5) - 1))
+        y_train_set = np.zeros((self.size, 3, int(self.PreSize / 5) - 1), dtype=np.float32)
         for t in range(self.size):
             # print(t)
             for i in range(self.WinSize - 1):
@@ -92,9 +92,9 @@ class Prepross_Data():
             y_train_set[t, 0, :] = y_train_set[t, 0, :] / (y_max[0]+1e-8)
             y_train_set[t, 1, :] = y_train_set[t, 1, :] / (y_max[1]+1e-8)
             y_train_set[t, 2, :] = y_train_set[t, 2, :] / (y_max[2]++1e-8)
-        y_train_set = np.zeros((self.size, 3 * (int(self.PreSize / 5) - 1)), dtype=np.float32)
-        y_train_set = y_train_set.reshape(self.size, 3 * (int(self.PreSize / 5) - 1))
-        return x_train_set, y_train_set
+        y_train_set_return = np.zeros((self.size, 3 * (int(self.PreSize / 5) - 1)), dtype=np.float32)
+        y_train_set_return = y_train_set.reshape(self.size, 3 * (int(self.PreSize / 5) - 1))
+        return x_train_set, y_train_set_return
 
 
 class Head_Motion_Dataset(Dataset):

@@ -98,7 +98,7 @@ class Head_Motion_Predict(nn.Module):
 
         self.fnn = nn.Sequential(
             nn.Linear(30*1, 27),
-            nn.ReLU(),
+            #nn.ReLU(),
         )
     def forward(self, x):
         input1_1 = torch.zeros((len(x), 1, 19), dtype=torch.float32).cuda()
@@ -114,18 +114,22 @@ class Head_Motion_Predict(nn.Module):
 
         out1 = torch.cat((out1_1, out1_2, out1_3), 1).cuda()
         out1 = out1.view(len(out1), 30)
+
         input2 = torch.zeros((len(out1), 30, 1), dtype=torch.float32).cuda()
         input2[:, :, 0] = out1
         r_out1, h1 = self.GRU1(input2, None)
+
         input3 = torch.zeros((len(r_out1), 1 , 30, 64),dtype=torch.float32).cuda()
         input3[:, 0, :,:] = r_out1
 
         out2 = self.cnn1(input3)
 
+
         input4 = torch.zeros((len(out2), 30, 35), dtype=torch.float32).cuda()
         input4 = out2[:, 0, :, :]
 
         r_out2, h_2 = self.GRU2(input4, None)
+
 
         #self.cnn2:
         input5 = torch.zeros((len(r_out2), 1, 30, 64), dtype=torch.float32).cuda()
@@ -157,6 +161,7 @@ class Head_Motion_Predict(nn.Module):
         input10 = out5[:, 0, :, :]
         r_out5, h_5 = self.GRU5(input10, None)
 
+
         #self.cnn5:
         input11 = torch.zeros((len(r_out5), 1, 30, 64), dtype=torch.float32).cuda()
         input11[:, 0, :, :] = r_out5
@@ -172,12 +177,19 @@ class Head_Motion_Predict(nn.Module):
         input13[:, 0, :, :] = r_out6
         out7 = self.cnn6(input13)
 
+
         #self.max_p1:
         out8 = self.max_p1(out7)
+        #print('out8')
+        #print(out8)
+
 
         #self.fnn:
         input14 = torch.zeros((len(out8), 30), dtype=torch.float32).cuda()
         input14 = out8[:, :, 0, 0]
         out = self.fnn(input14)
+        #print('out')
+        #print(out)
+
 
         return out
