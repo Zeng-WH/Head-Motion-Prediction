@@ -10,8 +10,8 @@ import time
 
 
 def main():
-    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-    data_set = preprocess.read_all_file('/home/ypd-19-2/头部位置预测/数据--11.19')
+    #os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+    data_set = preprocess.read_all_file('D:\模式识别\头部姿态预测\数据--11.19\数据--11.19')
     train = data_set[0: math.floor(0.8 * len(data_set)), :]
     val = data_set[math.floor(0.8 * len(data_set)): len(data_set), :]
     train_pre = preprocess.Prepross_Data(train, 20, 50)
@@ -23,6 +23,7 @@ def main():
     val_set = preprocess.Head_Motion_Dataset(val_x, val_y)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+    torch.save(train_loader, 'train_loader.pt')
     model = modeling.Head_Motion_Predict().cuda()
     loss = nn.L1Loss().cuda()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -40,8 +41,10 @@ def main():
             optimizer.zero_grad()
             train_pred = model(data[0].cuda())
             batch_loss = loss(train_pred, data[1].cuda())
-            #print('y')
-            #print(data[1].cuda())
+            print('train_pred:')
+            print(train_pred)
+            print('data[1].cuda():')
+            print(data[1].cuda())
             batch_loss.backward()
             optimizer.step()
 

@@ -71,6 +71,7 @@ class Prepross_Data():
                 self.Ova[np.arange(t + self.WinSize + 4, t + self.WinSize + self.PreSize + 1, 5), 1])
             y_train_set[t, 2, :] = np.transpose(
                 self.Ova[np.arange(t + self.WinSize + 4, t + self.WinSize + self.PreSize + 1, 5), 2])
+            print('北大')
             # 依次代表theta, phi, psi三个角度
         return x_train_set, y_train_set
 

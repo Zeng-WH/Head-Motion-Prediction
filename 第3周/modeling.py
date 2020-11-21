@@ -97,8 +97,9 @@ class Head_Motion_Predict(nn.Module):
         self.max_p1 = nn.MaxPool2d((1, 35), stride=(1, 1))
 
         self.fnn = nn.Sequential(
-            nn.Linear(30*1, 27),
-            #nn.ReLU(),
+            nn.Linear(30*1, 30*1),
+            nn.ReLU(),
+            nn.Linear(30*1, 27)
         )
     def forward(self, x):
         input1_1 = torch.zeros((len(x), 1, 19), dtype=torch.float32).cuda()
@@ -112,7 +113,7 @@ class Head_Motion_Predict(nn.Module):
         input1_3[:, 0, :] = x[:, 2, :]
         out1_3 = self.cnn0_psi(input1_3)
 
-        out1 = torch.cat((out1_1, out1_2, out1_3), 1).cuda()
+        out1 = torch.cat((out1_1, out1_2, out1_3), 1)
         out1 = out1.view(len(out1), 30)
 
         input2 = torch.zeros((len(out1), 30, 1), dtype=torch.float32).cuda()
@@ -180,16 +181,10 @@ class Head_Motion_Predict(nn.Module):
 
         #self.max_p1:
         out8 = self.max_p1(out7)
-        #print('out8')
-        #print(out8)
-
 
         #self.fnn:
         input14 = torch.zeros((len(out8), 30), dtype=torch.float32).cuda()
         input14 = out8[:, :, 0, 0]
         out = self.fnn(input14)
-        #print('out')
-        #print(out)
-
 
         return out
